@@ -258,6 +258,8 @@ Get-AppxPackage Microsoft.XBoxSpeechToTextOverlay | Remove-AppxPackage
 Get-AppxPackage Microsoft.XBoxGameCallableUI | Remove-AppxPackage
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# An dieser Stelle werden Registry Einträge für den PC durchgeführt
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser Stelle werden Werbe-Apps im Starmenü entfernen
 #https://www.antary.de/2016/05/23/windows-10-werbe-apps-im-startmenue-entfernen/?cookie-state-change=1565467955970
@@ -272,6 +274,10 @@ REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /
 REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v DisableWebSearch /t REG_DWORD /d 1
 REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v AllowSearchToUseLocation /t REG_DWORD /d 0
 REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v ConnectedSearchUseWeb /t REG_DWORD /d 0
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# An dieser Stelle werden Registry Einträge für den Benutzer durchgeführt
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser Stelle wird eingestellt das die Windows Version im unteren rechten bereich auf dem Desktop angezeigt wird
 #https://www.pcwelt.de/tipps/Versionsnummer-einblenden-10048509.html
