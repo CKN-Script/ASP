@@ -115,7 +115,7 @@ netsh winhttp reset proxy
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser Stelle werden die Policy basierenden Windows Update Einstellungen gelöscht
-REG DELETE HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate
+REG DELETE "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stelle die Vorinstallierten Windows 10 Apps deinstalliert
@@ -264,16 +264,16 @@ Get-AppxPackage Microsoft.XBoxGameCallableUI | Remove-AppxPackage
 #An dieser Stelle werden Werbe-Apps im Starmenü entfernen
 #https://www.antary.de/2016/05/23/windows-10-werbe-apps-im-startmenue-entfernen/?cookie-state-change=1565467955970
 #https://www.deskmodder.de/blog/2018/09/12/app-vorschlaege-deaktivieren-bei-der-installation-von-programmen-in-der-windows-10-1809/
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /f /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent /f /v DisableSoftLanding /t REG_DWORD /d 1
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer /f /v AicEnabled /t REG_SZ /d Anywhere
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /f /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /f /v DisableSoftLanding /t REG_DWORD /d 1
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /f /v AicEnabled /t REG_SZ /d Anywhere
 
 #An dieser Stelle wird Cortana deaktiviert
 #https://www.tecchannel.de/a/so-koennen-sie-cortana-abschalten,3277884
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v AllowCortana /t REG_DWORD /d 0
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v DisableWebSearch /t REG_DWORD /d 1
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v AllowSearchToUseLocation /t REG_DWORD /d 0
-REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /v ConnectedSearchUseWeb /t REG_DWORD /d 0
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v AllowCortana /t REG_DWORD /d 0
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v DisableWebSearch /t REG_DWORD /d 1
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v AllowSearchToUseLocation /t REG_DWORD /d 0
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v ConnectedSearchUseWeb /t REG_DWORD /d 0
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # An dieser Stelle werden Registry Einträge für den Benutzer durchgeführt
@@ -281,41 +281,56 @@ REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience /f /
 
 #An dieser Stelle wird eingestellt das die Windows Version im unteren rechten bereich auf dem Desktop angezeigt wird
 #https://www.pcwelt.de/tipps/Versionsnummer-einblenden-10048509.html
-REG ADD HKEY_CURRENT_USER\Control Panel\Desktop /f /v PaintDesktopVersion /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Control Panel\Desktop" /f /v PaintDesktopVersion /t REG_DWORD /d 1
 
 #An dieser Stelle wird eingestellt das in der Taskleiste immer alle Symbole angezeigt werden
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer /f /v EnableAutoTray /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer" /f /v EnableAutoTray /t REG_DWORD /d 0
 
 #An dieser Stelle wird eingestellt das die Tasks in der Taskleiste nie Gruppiert werden
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v TaskbarGlomLevel /t REG_DWORD /d 2
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v TaskbarGlomLevel /t REG_DWORD /d 2
 
 #An dieser Stelle wird der Task View Button in der Taskleiste entfernt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v ShowTaskViewButton /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v ShowTaskViewButton /t REG_DWORD /d 0
 
 #An dieser Stelle wird der Kontakte Bereich in der Taskleiste entfernt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People /f /v PeopleBand /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" /f /v PeopleBand /t REG_DWORD /d 0
 
 #An dieser Stelle wird wird im Windows Explorer die Option Alle Ordner Anzeigen gesetzt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v NavPaneShowAllFolders /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v NavPaneShowAllFolders /t REG_DWORD /d 1
 
 #An dieser Stelle wird wird im Windows Explorer die Option Ausgeblendete Dateien, Ordner und Laufwerke Anzeigen gesetzt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v Hidden /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v Hidden /t REG_DWORD /d 1
 
 #An dieser Stelle wird wird im Windows Explorer die Option Erweitern, um Ordner zu öffnen gesetzt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v NavPaneExpandToCurrentFolder /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v NavPaneExpandToCurrentFolder /t REG_DWORD /d 1
 
 #An dieser Stelle wird wird im Windows Explorer die Option Dateisymbol auf Miniaturansichten anzeigen ausgeschaltet
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v ShowTypeOverlay /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v ShowTypeOverlay /t REG_DWORD /d 0
 
 #An dieser Stelle wird wird im Windows Explorer die Option Erweiterungen bei bekannten Dateitypen ausblenden ausgeschaltet
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v HideFileExt /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v HideFileExt /t REG_DWORD /d 0
 
 #An dieser Stelle wird wird im Windows Explorer die Option Freigabe-Assistent verwenden ausgeschaltet
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v SharingWizardOn /t REG_DWORD /d 0
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v SharingWizardOn /t REG_DWORD /d 0
 
 #An dieser Stelle wird wird im Windows Explorer die Option Immer Menüs anzeigen gesetzt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v AlwaysShowMenus /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v AlwaysShowMenus /t REG_DWORD /d 1
 
 #An dieser Stelle wird wird im Windows Explorer die Option Vollständigen Pfad in der Titelleiste anzeigen gesetzt
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState /f /v FullPath /t REG_DWORD /d 1
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" /f /v FullPath /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Internet Explorer die Option Verlauf beim Beeenden löschen gesetzt
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Privacy" /f /v ClearBrowsingHistoryOnExit /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Internet Explorer die Option Temporäre Internetdateien Zu verwendender Speicherplatz auf 8 MB gesetzt
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache" /f /v ContentLimit /t REG_DWORD /d 8
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CachePrefix /t REG_SZ /d ""
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CacheLimit /t REG_DWORD /d 2000
+
+#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\CACHE" /f /v Persistent /t REG_DWORD /d 0
+
+#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Start Page" /t REG_SZ /d "http://www.google.de/"
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Secondary Start Pages" /t REG_MULTI_SZ /d "http://www.ckn.de/"
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
