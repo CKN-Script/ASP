@@ -295,4 +295,27 @@ REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Adv
 #An dieser Stelle wird der Kontakte Bereich in der Taskleiste entfernt
 REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People /f /v PeopleBand /t REG_DWORD /d 0
 
+#An dieser Stelle wird wird im Windows Explorer die Option Alle Ordner Anzeigen gesetzt
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v NavPaneShowAllFolders /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Windows Explorer die Option Ausgeblendete Dateien, Ordner und Laufwerke Anzeigen gesetzt
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v Hidden /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Windows Explorer die Option Erweitern, um Ordner zu öffnen gesetzt
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v NavPaneExpandToCurrentFolder /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Windows Explorer die Option Dateisymbol auf Miniaturansichten anzeigen ausgeschaltet
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v ShowTypeOverlay /t REG_DWORD /d 0
+
+#An dieser Stelle wird wird im Windows Explorer die Option Erweiterungen bei bekannten Dateitypen ausblenden ausgeschaltet
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v HideFileExt /t REG_DWORD /d 0
+
+#An dieser Stelle wird wird im Windows Explorer die Option Freigabe-Assistent verwenden ausgeschaltet
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v SharingWizardOn /t REG_DWORD /d 0
+
+#An dieser Stelle wird wird im Windows Explorer die Option Immer Menüs anzeigen gesetzt
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /f /v AlwaysShowMenus /t REG_DWORD /d 1
+
+#An dieser Stelle wird wird im Windows Explorer die Option Vollständigen Pfad in der Titelleiste anzeigen gesetzt
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState /f /v FullPath /t REG_DWORD /d 1
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
