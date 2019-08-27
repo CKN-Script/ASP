@@ -117,6 +117,20 @@ netsh winhttp reset proxy
 #An dieser Stelle werden die Policy basierenden Windows Update Einstellungen gelöscht
 REG DELETE "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate"
 
+#An dieser Stelle wird die Windows Update Auslieferungs Optimierung ausgeschaltet
+#https://www.kapilarya.com/configure-windows-update-delivery-optimization-windows-10
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /f /v DODownloadMode /t REG_DWORD /d 0
+
+#An dieser Stelle wird das Windows Update auf Benachrichtigung für Herunterladen und Installieren eingestellt
+#https://docs.microsoft.com/de-de/windows/deployment/update/waas-wu-settings
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /f /v AUOptions /t REG_DWORD /d 2
+
+#An dieser Stelle wird das automatische Treiber Update ausgeschaltet
+#https://forums.mydigitallife.net/threads/disable-driver-update-regedit-1709-fall-creators-update.75846/
+REG ADD "HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /f /v DontSearchWindowsUpdate /t REG_DWORD /d 1
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /f /v SearchOrderConfig /t REG_DWORD /d 0
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /f /v PreventDeviceMetadataFromNetwork /t REG_DWORD /d 1
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stelle die Vorinstallierten Windows 10 Apps deinstalliert
 #https://www.heise.de/tipps-tricks/Windows-10-Vorinstallierte-Apps-deinstallieren-3970502.html
@@ -299,45 +313,45 @@ REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Ad
 #An dieser Stelle wird der Kontakte Bereich in der Taskleiste entfernt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" /f /v PeopleBand /t REG_DWORD /d 0
 
-#An dieser Stelle wird wird im Windows Explorer die Option Alle Ordner Anzeigen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Alle Ordner Anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v NavPaneShowAllFolders /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Windows Explorer die Option Ausgeblendete Dateien, Ordner und Laufwerke Anzeigen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Ausgeblendete Dateien, Ordner und Laufwerke Anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v Hidden /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Windows Explorer die Option Erweitern, um Ordner zu öffnen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Erweitern, um Ordner zu öffnen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v NavPaneExpandToCurrentFolder /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Windows Explorer die Option Dateisymbol auf Miniaturansichten anzeigen ausgeschaltet
+#An dieser Stelle wird im Windows Explorer die Option Dateisymbol auf Miniaturansichten anzeigen ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v ShowTypeOverlay /t REG_DWORD /d 0
 
-#An dieser Stelle wird wird im Windows Explorer die Option Erweiterungen bei bekannten Dateitypen ausblenden ausgeschaltet
+#An dieser Stelle wird im Windows Explorer die Option Erweiterungen bei bekannten Dateitypen ausblenden ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v HideFileExt /t REG_DWORD /d 0
 
-#An dieser Stelle wird wird im Windows Explorer die Option Freigabe-Assistent verwenden ausgeschaltet
+#An dieser Stelle wird im Windows Explorer die Option Freigabe-Assistent verwenden ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v SharingWizardOn /t REG_DWORD /d 0
 
-#An dieser Stelle wird wird im Windows Explorer die Option Immer Menüs anzeigen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Immer Menüs anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v AlwaysShowMenus /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Windows Explorer die Option Vollständigen Pfad in der Titelleiste anzeigen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Vollständigen Pfad in der Titelleiste anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" /f /v FullPath /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Internet Explorer die Option Verlauf beim Beeenden löschen gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Verlauf beim Beeenden löschen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Privacy" /f /v ClearBrowsingHistoryOnExit /t REG_DWORD /d 1
 
-#An dieser Stelle wird wird im Internet Explorer die Option Temporäre Internetdateien Zu verwendender Speicherplatz auf 8 MB gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Temporäre Internetdateien Zu verwendender Speicherplatz auf 8 MB gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache" /f /v ContentLimit /t REG_DWORD /d 8
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CachePrefix /t REG_SZ /d ""
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CacheLimit /t REG_DWORD /d 2000
 
-#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\CACHE" /f /v Persistent /t REG_DWORD /d 0
 
-#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Start Page" /t REG_SZ /d "http://www.google.de/"
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Secondary Start Pages" /t REG_MULTI_SZ /d "http://www.ckn.de/"
 
-#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners Proxyserver für LAN verwenden ausgeschaltet
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners Proxyserver für LAN verwenden ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
