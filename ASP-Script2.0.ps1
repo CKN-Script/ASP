@@ -337,4 +337,7 @@ REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Se
 #An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Start Page" /t REG_SZ /d "http://www.google.de/"
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Secondary Start Pages" /t REG_MULTI_SZ /d "http://www.ckn.de/"
+
+#An dieser Stelle wird wird im Internet Explorer die Option Leeren des Ordners Proxyserver für LAN verwenden ausgeschaltet
+REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
