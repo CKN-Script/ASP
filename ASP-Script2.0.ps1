@@ -91,6 +91,27 @@ Add-LocalGroupMember -Group Administratoren -Member Administrator
 Remove-LocalGroupMember -Group Benutzer -Member Administrator
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#An dieser Stelle werden Computer Kopiervorgänge durchgeführt
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#https://www.itslot.de/2019/02/poweshell-ordner-und-unterordner.html
+#An dieser Stelle wird ein Installationsverzeichnis kopiert und das ckn Softwarepaket kopiert
+Copy-Item "Gemeinsam\Allgemein" -Destination "c:\Install\" -Recurse
+#An dieser Stelle wird das Kundenspezifische Softwarepaket kopiert
+Copy-Item "Kunden\$Kundenname\" -Destination "c:\Install\" -Recurse
+
+#An dieser Stelle wird die ckn Teamviewer Verknüpfung auf den All-Users Desktiop kopiert
+Copy-Item "C:\Install\ckn-TeamViewer.lnk" -Destination "c:\users\public\desktop\ckn-TeamViewer.lnk"
+#An dieser Stelle wird das Programm ShowInfo in den All-Users AutoStart kopiert
+Copy-Item "C:\Install\showinfo.exe" -Destination "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\ShowInfo.exe"
+#An dieser Stelle wird die ShowInfo Verknüpfung auf den All-Users Desktiop kopiert
+Copy-Item "C:\Install\showinfo.lnk" -Destination "c:\users\public\desktop\showinfo.lnk"
+#An dieser Stelle wird das ASP Icon auf den Desktop des Standard Users kopiert
+Copy-Item "C:\Install\ASP.rdp" -Destination "C:\Users\Standard\Desktop\ASP.rdp"
+#An dieser Stelle wird die ASP Verknüpfung in den Autostart Ordner des Standard Users kopiert
+Copy-Item "C:\Install\ASP.lnk" -Destination "C:\Users\Standard\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ASP.lnk"
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stelle werden Computer Spezifische Einstellungen vorgenommen
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
