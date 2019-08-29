@@ -27,6 +27,7 @@ $Kundenkennung = "A78"
 $Kundenname = "Testkunde"
 $Kundennummer = "173597#Ckn"
 $Password = "Datev001"
+$WTSIPAdresse = "10.10.10.11"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stelle wird der für ckn PartnerASP vorgegebenen User Standard auf den lokalen PCs eingerichtet
@@ -91,7 +92,7 @@ Add-LocalGroupMember -Group Administratoren -Member Administrator
 Remove-LocalGroupMember -Group Benutzer -Member Administrator
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle werden Computer Kopiervorgänge durchgeführt
+#An dieser Stelle werden Computer Allgemeine Kopiervorgänge durchgeführt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #https://www.itslot.de/2019/02/poweshell-ordner-und-unterordner.html
@@ -106,6 +107,28 @@ Copy-Item "C:\Install\ckn-TeamViewer.lnk" -Destination "c:\users\public\desktop\
 Copy-Item "C:\Install\showinfo.exe" -Destination "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\ShowInfo.exe"
 #An dieser Stelle wird die ShowInfo Verknüpfung auf den All-Users Desktiop kopiert
 Copy-Item "C:\Install\showinfo.lnk" -Destination "c:\users\public\desktop\showinfo.lnk"
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#An dieser Stelle wird das Kundenspezifische ASP Icon erstellt
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#https://administrator.de/forum/powershell-dateiinhalt-ver%C3%A4ndern-148018.html
+#https://blog.stefanrehwald.de/2013/03/03/powershell-03-2-strings-bearbeiten-und-untersuchen-mit-funktionen-wie-trim-substring-contains-tolower-toupper-startswith-endswith/
+
+$QuelleAPSIcon="C:\install\ASP.txt"
+$ZielASPIcon="C:\install\ASP.rdp"
+
+$Datei = Get-ChildItem $QuelleAPSIcon
+foreach ($String in $Datei)
+{
+$Inhalt = Get-Content -Path $String
+$Inhalt | foreach {$_ -replace "K123","$Kundenkennung"} | foreach {$_ -replace "255.255.255.255","$WTSIPAdresse"} | Out-File -FilePath $ZielASPIcon -encoding Default -Append 
+}
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#An dieser Stelle werden die Standard User spezifischen Kopiervorgänge ausgeführt
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #An dieser Stelle wird das ASP Icon auf den Desktop des Standard Users kopiert
 Copy-Item "C:\Install\ASP.rdp" -Destination "C:\Users\Standard\Desktop\ASP.rdp"
 #An dieser Stelle wird die ASP Verknüpfung in den Autostart Ordner des Standard Users kopiert
