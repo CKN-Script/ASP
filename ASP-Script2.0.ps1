@@ -1,11 +1,8 @@
 <#-------------------------------------------------------------------------------------------------------------------
-
 Das ASP Script von CKN
-
 Scripted by:
 Jens Steinhäuser
 Martin Barthel
-
 -------------------------------------------------------------------------------------------------------------------#>
 
 
@@ -30,64 +27,71 @@ $Password = "Datev001"
 $WTSIPAdresse = "10.10.10.11"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der für ckn PartnerASP vorgegebenen User Standard auf den lokalen PCs eingerichtet
+#An dieser Stelle wird der für ckn PartnerASP vorgegebenen User STANDARD auf den lokalen PCs eingerichtet
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser stelle wird eine Variable erzeugt die das Kennwort für Administrator in einen SecurityString umwandelt
 $StandardPassword = (convertto-securestring -string $Password -asplaintext -force)
-
-#An dieser Stelle wird der User Standard neu angelegt.
-#Es wird eingestellt das, das Benutzerkonto nie abläuft
-#Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
-#Das Kennwort wird über die Variable $StandardPassword eingetragen
-#Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
-#Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
-New-LocalUser -name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires -UserMayNotChangePassword
-
-#An dieser Stelle werden für den User Standard diverse Einstellungen gesetzt wenn er schon vorhanden ist
-#Es wird eingestellt das, das Benutzerkonto nie abläuft
-#Das Kennwort wird über die Variable $StandardPassword eingetragen
-#Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
-#Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
-Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false
-
-#An dieser Stelle wird der User Standard aktiviert wenn er deaktiviert sein sollte
-Enable-LocalUser -Name standard
-
+#Prüfen ob der User "standard" schon existiert
+if (-not (get-localuser -name "standard" -ErrorAction SilentlyContinue))
+{
+    Write-host -ForegroundColor Green 'OK: Der User "standard" existiert nicht! Er wird nun angelegt.'
+# An dieser Stelle wird der User Standard neu angelegt.
+# Es wird eingestellt das, das Benutzerkonto nie abläuft
+# Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
+# Das Kennwort wird über die Variable $StandardPassword eingetragen
+# Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
+# Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
+    New-LocalUser -name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires -UserMayNotChangePassword
+}
+else
+{
+    write-warning 'Der User "standard" existiert'
+# An dieser Stelle werden für den User Standard diverse Einstellungen gesetzt wenn er schon vorhanden ist
+# Es wird eingestellt das, das Benutzerkonto nie abläuft
+# Das Kennwort wird über die Variable $StandardPassword eingetragen
+# Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
+# Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
+    Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false
+# An dieser Stelle wird der User Standard aktiviert wenn er deaktiviert sein sollte
+    Enable-LocalUser -Name standard
+}
 #An dieser Stelle wird der User Standard der lokalen Gruppe Benutzer hinzugefügt
 Add-LocalGroupMember -Group Benutzer -Member standard
-
 #An dieser Stelle wird der User Standard aus der lokalen Gruppe Administratoren entfernt
 Remove-LocalGroupMember -Group Administratoren -Member standard
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der für ckn partnerASP vorgegebenen User Administrator auf den lokalen PCs eingerichtet
+#An dieser Stelle wird der für ckn partnerASP vorgegebenen User ADMINISTRATOR auf den lokalen PCs eingerichtet
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser stelle wird eine Variable erzeugt die das Kennwort für Administrator in einen SecurityString umwandelt
-$StandardPassword = (convertto-securestring -string $Password -asplaintext -force)
-
+$AdminPassword = (convertto-securestring -string $Kundennummer -asplaintext -force)
+if (-not (get-localuser -name "Administrator" -ErrorAction SilentlyContinue))
+{
+    Write-host -ForegroundColor Green 'OK: Der User "Administrator" existiert nicht! Er wird nun angelegt.'
 #An dieser Stelle wird der User Administrator neu angelegt.
 #Es wird eingestellt das, das Benutzerkonto nie abläuft
 #Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
 #Das Kennwort wird über die Variable $StandardPassword eingetragen
 #Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
 #Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
-New-LocalUser -name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires -UserMayNotChangePassword
-
+    New-LocalUser -name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires -UserMayNotChangePassword
+}
+else
+{
+    write-warning 'Der User "Administrator" existiert'
 #An dieser Stelle werden für den User Administrator diverse Einstellungen gesetzt wenn er schon vorhanden ist
 #Es wird eingestellt das, das Benutzerkonto nie abläuft
 #Das Kennwort wird über die Variable $StandardPassword eingetragen
 #Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
 #Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
-Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false
-
+    Set-LocalUser -Name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires $true -UserMayChangePassword $false
 #An dieser Stelle wird der User Administrator aktiviert wenn er deaktiviert sein sollte
-Enable-LocalUser -Name standard
-
+    Enable-LocalUser -Name Administrator
+}
 #An dieser Stelle wird der User Administrator der lokalen Gruppe Administratoren hinzugefügt
 Add-LocalGroupMember -Group Administratoren -Member Administrator
-
 #An dieser Stelle wird der User Administrator aus der lokalen Gruppe Benutzer entfernt
 Remove-LocalGroupMember -Group Benutzer -Member Administrator
 
@@ -345,10 +349,6 @@ REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v DisableWebSearch /t REG_DWORD /d 1
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v AllowSearchToUseLocation /t REG_DWORD /d 0
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v ConnectedSearchUseWeb /t REG_DWORD /d 0
-
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# An dieser Stelle werden Registry Einträge für den Benutzer durchgeführt
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # An dieser Stelle werden Registry Einträge für den Benutzer durchgeführt
