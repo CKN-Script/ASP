@@ -1,20 +1,18 @@
 <#-------------------------------------------------------------------------------------------------------------------
 Das ASP Script von CKN
 Scripted by:
-Jens SteinhÃ¤user
+Jens Steinhäuser
 Martin Barthel
 -------------------------------------------------------------------------------------------------------------------#>
-
-
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stellen werden Powershell spezifische Einstellungen vorgenommen
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#An dieser Stelle wird die ScriptausfÃ¼hrung fÃ¼r den aktuellen User erlaubt
-Set-ExecutionPolicy â€“Scope CurrentUser â€“ExecutionPolicy Bypass â€“Force
+#An dieser Stelle wird die Scriptausführung für den aktuellen User erlaubt
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force
 #An diser Stelle werden die die Powershell Help Dateien aktualisiert
-Update-Help -UICulture En-US -Force
+    Update-Help -UICulture En-US -Force -ErrorAction SilentlyContinue
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stellen werden die Kundenspezifischen Einstellungen in Variablen hinterlegt
@@ -27,76 +25,76 @@ $Password = "Datev001"
 $WTSIPAdresse = "10.10.10.11"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der fÃ¼r ckn PartnerASP vorgegebenen User STANDARD auf den lokalen PCs eingerichtet
+#An dieser Stelle wird der für ckn PartnerASP vorgegebenen User STANDARD auf den lokalen PCs eingerichtet
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#An dieser stelle wird eine Variable erzeugt die das Kennwort fÃ¼r Administrator in einen SecurityString umwandelt
+#An dieser stelle wird eine Variable erzeugt die das Kennwort für Administrator in einen SecurityString umwandelt
 $StandardPassword = (convertto-securestring -string $Password -asplaintext -force)
-#PrÃ¼fen ob der User "standard" schon existiert
+#Prüfen ob der User "standard" schon existiert
 if (-not (get-localuser -name "standard" -ErrorAction SilentlyContinue))
 {
     Write-host -ForegroundColor Green 'OK: Der User "standard" existiert nicht! Er wird nun angelegt.'
 # An dieser Stelle wird der User Standard neu angelegt.
-# Es wird eingestellt das, das Benutzerkonto nie ablÃ¤uft
+# Es wird eingestellt das, das Benutzerkonto nie abläuft
 # Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
-# Das Kennwort wird Ã¼ber die Variable $StandardPassword eingetragen
-# Der Schalter "Kennwort lÃ¤uft nie ab" im User wird gesetzt
+# Das Kennwort wird über die Variable $StandardPassword eingetragen
+# Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
 # Der Schalter "Benutzer kann Kennwort nicht Ã¤ndern" im User wird gesetzt
-    New-LocalUser -name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires -UserMayNotChangePassword
+    New-LocalUser -name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires -UserMayNotChangePassword -ErrorAction SilentlyContinue
 }
 else
 {
     write-warning 'Der User "standard" existiert'
-# An dieser Stelle werden fÃ¼r den User Standard diverse Einstellungen gesetzt wenn er schon vorhanden ist
-# Es wird eingestellt das, das Benutzerkonto nie ablÃ¤uft
-# Das Kennwort wird Ã¼ber die Variable $StandardPassword eingetragen
-# Der Schalter "Kennwort lÃ¤uft nie ab" im User wird gesetzt
-# Der Schalter "Benutzer kann Kennwort nicht Ã¤ndern" im User wird gesetzt
-    Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false
+# An dieser Stelle werden für den User Standard diverse Einstellungen gesetzt wenn er schon vorhanden ist
+# Es wird eingestellt das, das Benutzerkonto nie abläuft
+# Das Kennwort wird über die Variable $StandardPassword eingetragen
+# Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
+# Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
+    Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false -ErrorAction SilentlyContinue
 # An dieser Stelle wird der User Standard aktiviert wenn er deaktiviert sein sollte
-    Enable-LocalUser -Name standard
+    Enable-LocalUser -Name standard -ErrorAction SilentlyContinue
 }
 #An dieser Stelle wird der User Standard der lokalen Gruppe Benutzer hinzugefÃ¼gt
-Add-LocalGroupMember -Group Benutzer -Member standard
+Add-LocalGroupMember -Group Benutzer -Member standard -ErrorAction SilentlyContinue
 #An dieser Stelle wird der User Standard aus der lokalen Gruppe Administratoren entfernt
-Remove-LocalGroupMember -Group Administratoren -Member standard
+Remove-LocalGroupMember -Group Administratoren -Member standard -ErrorAction SilentlyContinue
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der fÃ¼r ckn partnerASP vorgegebenen User ADMINISTRATOR auf den lokalen PCs eingerichtet
+#An dieser Stelle wird der für ckn partnerASP vorgegebenen User ADMINISTRATOR auf den lokalen PCs eingerichtet
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#An dieser stelle wird eine Variable erzeugt die das Kennwort fÃ¼r Administrator in einen SecurityString umwandelt
+#An dieser stelle wird eine Variable erzeugt die das Kennwort für Administrator in einen SecurityString umwandelt
 $AdminPassword = (convertto-securestring -string $Kundennummer -asplaintext -force)
 if (-not (get-localuser -name "Administrator" -ErrorAction SilentlyContinue))
 {
     Write-host -ForegroundColor Green 'OK: Der User "Administrator" existiert nicht! Er wird nun angelegt.'
 #An dieser Stelle wird der User Administrator neu angelegt.
-#Es wird eingestellt das, das Benutzerkonto nie ablÃ¤uft
+#Es wird eingestellt das, das Benutzerkonto nie abläuft
 #Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
-#Das Kennwort wird Ã¼ber die Variable $StandardPassword eingetragen
-#Der Schalter "Kennwort lÃ¤uft nie ab" im User wird gesetzt
-#Der Schalter "Benutzer kann Kennwort nicht Ã¤ndern" im User wird gesetzt
-    New-LocalUser -name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires -UserMayNotChangePassword
+#Das Kennwort wird über die Variable $StandardPassword eingetragen
+#Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
+#Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
+    New-LocalUser -name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires -UserMayNotChangePassword -ErrorAction SilentlyContinue
 }
 else
 {
     write-warning 'Der User "Administrator" existiert'
-#An dieser Stelle werden fÃ¼r den User Administrator diverse Einstellungen gesetzt wenn er schon vorhanden ist
-#Es wird eingestellt das, das Benutzerkonto nie ablÃ¤uft
-#Das Kennwort wird Ã¼ber die Variable $StandardPassword eingetragen
-#Der Schalter "Kennwort lÃ¤uft nie ab" im User wird gesetzt
-#Der Schalter "Benutzer kann Kennwort nicht Ã¤ndern" im User wird gesetzt
-    Set-LocalUser -Name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires $true -UserMayChangePassword $false
+#An dieser Stelle werden für den User Administrator diverse Einstellungen gesetzt wenn er schon vorhanden ist
+#Es wird eingestellt das, das Benutzerkonto nie abläuft
+#Das Kennwort wird über die Variable $StandardPassword eingetragen
+#Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
+#Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
+    Set-LocalUser -Name Administrator -AccountNeverExpires -Description "ckn Computer Admin User" -Password $AdminPassword -PasswordNeverExpires $true -UserMayChangePassword $false -ErrorAction SilentlyContinue
 #An dieser Stelle wird der User Administrator aktiviert wenn er deaktiviert sein sollte
-    Enable-LocalUser -Name Administrator
+    Enable-LocalUser -Name Administrator -ErrorAction SilentlyContinue
 }
-#An dieser Stelle wird der User Administrator der lokalen Gruppe Administratoren hinzugefÃ¼gt
-Add-LocalGroupMember -Group Administratoren -Member Administrator
+#An dieser Stelle wird der User Administrator der lokalen Gruppe Administratoren hinzugefügt
+    Add-LocalGroupMember -Group Administratoren -Member Administrator -ErrorAction SilentlyContinue
 #An dieser Stelle wird der User Administrator aus der lokalen Gruppe Benutzer entfernt
-Remove-LocalGroupMember -Group Benutzer -Member Administrator
+    Remove-LocalGroupMember -Group Benutzer -Member Administrator -ErrorAction SilentlyContinue
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle werden Computer Allgemeine KopiervorgÃ¤nge durchgefÃ¼hrt
+#An dieser Stelle werden Computer Allgemeine Kopiervorgänge durchgeführt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #https://www.itslot.de/2019/02/poweshell-ordner-und-unterordner.html
@@ -105,11 +103,11 @@ Copy-Item "Gemeinsam\Allgemein" -Destination "c:\Install\" -Recurse
 #An dieser Stelle wird das Kundenspezifische Softwarepaket kopiert
 Copy-Item "Kunden\$Kundenname\" -Destination "c:\Install\" -Recurse
 
-#An dieser Stelle wird die ckn Teamviewer VerknÃ¼pfung auf den All-Users Desktiop kopiert
+#An dieser Stelle wird die ckn Teamviewer Verknüpfung auf den All-Users Desktiop kopiert
 Copy-Item "C:\Install\ckn-TeamViewer.lnk" -Destination "c:\users\public\desktop\ckn-TeamViewer.lnk"
 #An dieser Stelle wird das Programm ShowInfo in den All-Users AutoStart kopiert
 Copy-Item "C:\Install\showinfo.exe" -Destination "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\ShowInfo.exe"
-#An dieser Stelle wird die ShowInfo VerknÃ¼pfung auf den All-Users Desktiop kopiert
+#An dieser Stelle wird die ShowInfo Verknüpfung auf den All-Users Desktiop kopiert
 Copy-Item "C:\Install\showinfo.lnk" -Destination "c:\users\public\desktop\showinfo.lnk"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -130,12 +128,12 @@ $Inhalt | foreach {$_ -replace "K123","$Kundenkennung"} | foreach {$_ -replace "
 }
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle werden die Standard User spezifischen KopiervorgÃ¤nge ausgefÃ¼hrt
+#An dieser Stelle werden die Standard User spezifischen Kopiervorgänge ausgeführt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser Stelle wird das ASP Icon auf den Desktop des Standard Users kopiert
 Copy-Item "C:\Install\ASP.rdp" -Destination "C:\Users\Standard\Desktop\ASP.rdp"
-#An dieser Stelle wird die ASP VerknÃ¼pfung in den Autostart Ordner des Standard Users kopiert
+#An dieser Stelle wird die ASP Verknüpfung in den Autostart Ordner des Standard Users kopiert
 Copy-Item "C:\Install\ASP.lnk" -Destination "C:\Users\Standard\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\ASP.lnk"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,10 +150,10 @@ Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\" -Na
 #An dieser Stelle werden die physikalischen Netzwerkkarten auf DHCP gestellt
 Get-NetAdapter -Physical | Set-NetIPInterface -Dhcp Enabled
 
-#An dieser Stelle wird fÃ¼r die physikalischen Netzwerkkarten den DNS-Server auf DHCP gestellt
+#An dieser Stelle wird für die physikalischen Netzwerkkarten den DNS-Server auf DHCP gestellt
 Get-NetAdapter -Physical | Set-DnsClientServerAddress -ResetServerAddresses
 
-#An dieser Stelle wird auf den physikalischen Netzwerkkarten der Eintrag "DNS-Suffix fÃ¼r diese Verbindung" gesetzt
+#An dieser Stelle wird auf den physikalischen Netzwerkkarten der Eintrag "DNS-Suffix für diese Verbindung" gesetzt
 Get-NetAdapter -Physical | Set-DnsClient -ConnectionSpecificSuffix dom$Kundenkennung.local
 
 #An dieser Stelle wird der DNS-Cache geleert
@@ -165,24 +163,24 @@ IPConfig /release
 IPConfig /renew
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der Proxy-Server auf Windows Ebene gelÃ¶scht
+#An dieser Stelle wird der Proxy-Server auf Windows Ebene gelöscht
 #https://www.der-windows-papst.de/2018/11/17/windows-proxy-server-systemweit-einstellen/
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 netsh winhttp reset proxy
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#An dieser Stelle wird der WSUS Server fÃ¼r den PC Eingestellt
+#An dieser Stelle wird der WSUS Server für den PC Eingestellt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#An dieser Stelle werden die Policy basierenden Windows Update Einstellungen gelÃ¶scht
+#An dieser Stelle werden die Policy basierenden Windows Update Einstellungen gelöscht
 REG DELETE "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate"
 
 #An dieser Stelle wird die Windows Update Auslieferungs Optimierung ausgeschaltet
 #https://www.kapilarya.com/configure-windows-update-delivery-optimization-windows-10
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /f /v DODownloadMode /t REG_DWORD /d 0
 
-#An dieser Stelle wird das Windows Update auf Benachrichtigung fÃ¼r Herunterladen und Installieren eingestellt
+#An dieser Stelle wird das Windows Update auf Benachrichtigung für Herunterladen und Installieren eingestellt
 #https://docs.microsoft.com/de-de/windows/deployment/update/waas-wu-settings
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /f /v AUOptions /t REG_DWORD /d 2
 
@@ -210,7 +208,7 @@ Get-AppxPackage *3dbuilder* | Remove-AppxPackage
 Get-AppxPackage *Asphalt8Airborne* | Remove-AppxPackage
 
 #!Nicht vorhanden
-#An dieser Stelle wird Begleiter fÃ¼r Telefon deinstalliert
+#An dieser Stelle wird Begleiter für Telefon deinstalliert
 #Get-AppxPackage *windowsphone* | Remove-AppxPackage
 
 #!Nicht vorhanden
@@ -333,10 +331,10 @@ Get-AppxPackage Microsoft.XBoxSpeechToTextOverlay | Remove-AppxPackage
 Get-AppxPackage Microsoft.XBoxGameCallableUI | Remove-AppxPackage
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# An dieser Stelle werden Registry EintrÃ¤ge fÃ¼r den PC durchgefÃ¼hrt
+# An dieser Stelle werden Registry EintrÃ¤ge für den PC durchgefÃ¼hrt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#An dieser Stelle werden Werbe-Apps im StarmenÃ¼ entfernen
+#An dieser Stelle werden Werbe-Apps im Starmenü entfernen
 #https://www.antary.de/2016/05/23/windows-10-werbe-apps-im-startmenue-entfernen/?cookie-state-change=1565467955970
 #https://www.deskmodder.de/blog/2018/09/12/app-vorschlaege-deaktivieren-bei-der-installation-von-programmen-in-der-windows-10-1809/
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /f /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1
@@ -351,7 +349,7 @@ REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\PolicyManager\current\device\Experience" /f /v ConnectedSearchUseWeb /t REG_DWORD /d 0
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# An dieser Stelle werden Registry EintrÃ¤ge fÃ¼r den Benutzer durchgefÃ¼hrt
+# An dieser Stelle werden Registry EintrÃ¤ge für den Benutzer durchgefÃ¼hrt
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #An dieser Stelle wird eingestellt das die Windows Version im unteren rechten bereich auf dem Desktop angezeigt wird
@@ -376,7 +374,7 @@ REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Ad
 #An dieser Stelle wird im Windows Explorer die Option Ausgeblendete Dateien, Ordner und Laufwerke Anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v Hidden /t REG_DWORD /d 1
 
-#An dieser Stelle wird im Windows Explorer die Option Erweitern, um Ordner zu Ã¶ffnen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Erweitern, um Ordner zu öffnen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v NavPaneExpandToCurrentFolder /t REG_DWORD /d 1
 
 #An dieser Stelle wird im Windows Explorer die Option Dateisymbol auf Miniaturansichten anzeigen ausgeschaltet
@@ -388,27 +386,27 @@ REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Ad
 #An dieser Stelle wird im Windows Explorer die Option Freigabe-Assistent verwenden ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v SharingWizardOn /t REG_DWORD /d 0
 
-#An dieser Stelle wird im Windows Explorer die Option Immer MenÃ¼s anzeigen gesetzt
+#An dieser Stelle wird im Windows Explorer die Option Immer Menüs anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v AlwaysShowMenus /t REG_DWORD /d 1
 
 #An dieser Stelle wird im Windows Explorer die Option VollstÃ¤ndigen Pfad in der Titelleiste anzeigen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" /f /v FullPath /t REG_DWORD /d 1
 
-#An dieser Stelle wird im Internet Explorer die Option Verlauf beim Beeenden lÃ¶schen gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Verlauf beim Beeenden löschen gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Privacy" /f /v ClearBrowsingHistoryOnExit /t REG_DWORD /d 1
 
-#An dieser Stelle wird im Internet Explorer die Option TemporÃ¤re Internetdateien Zu verwendender Speicherplatz auf 8 MB gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Temporäre Internetdateien Zu verwendender Speicherplatz auf 8 MB gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache" /f /v ContentLimit /t REG_DWORD /d 8
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CachePrefix /t REG_SZ /d ""
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content" /f /v CacheLimit /t REG_DWORD /d 2000
 
-#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners fÃ¼r temporÃ¤re Internetdateien beim SchlieÃŸen des Browsers gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\CACHE" /f /v Persistent /t REG_DWORD /d 0
 
-#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners fÃ¼r temporÃ¤re Internetdateien beim SchlieÃŸen des Browsers gesetzt
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners für temporäre Internetdateien beim Schließen des Browsers gesetzt
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Start Page" /t REG_SZ /d "http://www.google.de/"
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main" /f /v "Secondary Start Pages" /t REG_MULTI_SZ /d "http://www.ckn.de/"
 
-#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners Proxyserver fÃ¼r LAN verwenden ausgeschaltet
+#An dieser Stelle wird im Internet Explorer die Option Leeren des Ordners Proxyserver für LAN verwenden ausgeschaltet
 REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyEnable /t REG_DWORD /d 0
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
