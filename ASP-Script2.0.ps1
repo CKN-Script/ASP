@@ -1,9 +1,25 @@
-<#-------------------------------------------------------------------------------------------------------------------
-Das ASP Script von CKN
-Scripted by:
-Jens Steinhäuser
-Martin Barthel
--------------------------------------------------------------------------------------------------------------------#>
+#-------------------------------------------------------------------------------------------------------------------
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green '                                                  Das ASP Script von CKN'
+Write-host -ForegroundColor Green '                                                       Scripted by:     '
+Write-host -ForegroundColor Green '                                                     Jens Steinhäuser   '
+Write-host -ForegroundColor Green '                                                      Martin Barthel    '
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+Write-host -ForegroundColor Green ''
+#-------------------------------------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stellen werden Powershell spezifische Einstellungen vorgenommen
@@ -25,6 +41,14 @@ $Password = "Datev001"
 $WTSIPAdresse = "10.10.10.11"
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#An dieser Stelle werden Einstellungen im Windows Eventlog vorgenommen
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#An dieser Stelle die ckn-Computer Sorce im Anwandgs Eventlog angelegt
+#https://www.msxfaq.de/code/powershell/pseventlog.htm
+New-EventLog -LogName "cknComputer" -Source "ASPUmstellungsScript2.0" -ErrorAction SilentlyContinue
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #An dieser Stelle wird der für ckn PartnerASP vorgegebenen User STANDARD auf den lokalen PCs eingerichtet
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +57,9 @@ $StandardPassword = (convertto-securestring -string $Password -asplaintext -forc
 #Prüfen ob der User "standard" schon existiert
 if (-not (get-localuser -name "standard" -ErrorAction SilentlyContinue))
 {
-    Write-host -ForegroundColor Green 'OK: Der User "standard" existiert nicht! Er wird nun angelegt.'
+    $StandardUserNichtVorhanden = "OK: Der User Standard existiert nicht! Er wird nun angelegt."
+    Write-host -ForegroundColor Green "$StandardUserNichtVorhanden"
+    Write-EventLog -EntryType Information -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$StandardUserNichtVorhanden"
 # An dieser Stelle wird der User Standard neu angelegt.
 # Es wird eingestellt das, das Benutzerkonto nie abläuft
 # Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
@@ -44,7 +70,9 @@ if (-not (get-localuser -name "standard" -ErrorAction SilentlyContinue))
 }
 else
 {
-    write-warning 'Der User "standard" existiert'
+    $StandardUserVorhanden = "Der User Standard existiert"
+    write-warning "$StandardUserVorhanden"
+    Write-EventLog -EntryType Information -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$StandardUserVorhanden"
 # An dieser Stelle werden für den User Standard diverse Einstellungen gesetzt wenn er schon vorhanden ist
 # Es wird eingestellt das, das Benutzerkonto nie abläuft
 # Das Kennwort wird über die Variable $StandardPassword eingetragen
@@ -67,7 +95,9 @@ Remove-LocalGroupMember -Group Administratoren -Member standard -ErrorAction Sil
 $AdminPassword = (convertto-securestring -string $Kundennummer -asplaintext -force)
 if (-not (get-localuser -name "Administrator" -ErrorAction SilentlyContinue))
 {
-    Write-host -ForegroundColor Green 'OK: Der User "Administrator" existiert nicht! Er wird nun angelegt.'
+    $AdministratorUserNichtVorhanden ="OK: Der User Administrator existiert nicht! Er wird nun angelegt."
+    Write-host -ForegroundColor Green "$AdministratorUserNichtVorhanden"
+    Write-EventLog -EntryType Information -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$AdministratorUserNichtVorhanden"
 #An dieser Stelle wird der User Administrator neu angelegt.
 #Es wird eingestellt das, das Benutzerkonto nie abläuft
 #Es wird die Beschreibung "ckn Computer default User" im User hinterlegt
@@ -78,7 +108,9 @@ if (-not (get-localuser -name "Administrator" -ErrorAction SilentlyContinue))
 }
 else
 {
-    write-warning 'Der User "Administrator" existiert'
+    $AdministratorUserVorhanden
+    write-warning "$AdministratorUserVorhanden"
+    Write-EventLog -EntryType Information -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$AdministratorUserVorhanden"
 #An dieser Stelle werden für den User Administrator diverse Einstellungen gesetzt wenn er schon vorhanden ist
 #Es wird eingestellt das, das Benutzerkonto nie abläuft
 #Das Kennwort wird über die Variable $StandardPassword eingetragen
