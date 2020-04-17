@@ -1,0 +1,11 @@
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass -Force
+echo $?
+$Error_Log = $?$Error
+echo $?
+if ($Error_Log)
+{ECHO "$Error_Log"}
+EXIT
+ELSE
+{ECHO "Nein"}
+echo $Error_Log
+echo $?
