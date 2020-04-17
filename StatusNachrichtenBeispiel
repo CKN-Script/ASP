@@ -1,0 +1,7 @@
+    $BenachrichtigungStandardUserNichtVorhanden = "Der User Standard existiert nicht! Er wird nun angelegt."
+    Write-host -ForegroundColor Green "$BenachrichtigungStandardUserNichtVorhanden"
+    Write-EventLog -EntryType Information -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$StandardUserNichtVorhanden"
+    
+    $BenachrichtigungStandardUserVorhanden = "Der User Standard existiert"
+    write-warning "$BenachrichtigungStandardUserVorhanden"
+    Write-EventLog -EntryType Warning -LogName cknComputer -EventId "10001" -Source "ASPUmstellungsScript2.0" -Category "0" -Message "$StandardUserVorhanden"
