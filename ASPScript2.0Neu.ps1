@@ -78,7 +78,7 @@ else
 # Das Kennwort wird über die Variable $StandardPassword eingetragen
 # Der Schalter "Kennwort läuft nie ab" im User wird gesetzt
 # Der Schalter "Benutzer kann Kennwort nicht ändern" im User wird gesetzt
-    Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires $true -UserMayChangePassword $false -ErrorAction SilentlyContinue
+    Set-LocalUser -Name standard -AccountNeverExpires -Description "ckn Computer default User" -Password $StandardPassword -PasswordNeverExpires 1 -UserMayChangePassword 0 -ErrorAction SilentlyContinue
 
 # An dieser Stelle wird der User Standard aktiviert wenn er deaktiviert sein sollte
     Write-host -ForegroundColor Green "OK: Der User Standard wird nun aktiviert"
