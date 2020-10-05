@@ -1,0 +1,23 @@
+$Dateityp = "*.txt", "*.exe", "*.pst" | Out-GridView -PassThru -Title "Bitte wähle den Dateityp!"
+$drives = Get-Volume | where DriveType -EQ "Fixed" | where FileSystemLabel -NotLike "*System-reserviert*" | sort -Property DriveLetter
+$Zielpfad = $drives | Out-GridView -PassThru -Title "Bitte Ablagelaufwerk wählen"
+$Zieldateiname = $Zielpfad.DriveLetter.ToString() + ":\" + (Get-Date).Day.ToString() + "_" + (Get-Date).Month.ToString() + "_" + (Get-Date).Year.ToString() + "_Output.csv"
+
+Clear-Variable dir
+cls
+foreach ($b in $Dateityp)
+{
+    foreach ($a in ($drives.driveletter))
+    {
+        $driveletter_string = $a.ToString()
+        Write-Host "Ich durchsuche Laufwerk" $driveletter_string "nach" $b
+        $dir_temp = Get-ChildItem -Path (($driveletter_string)+":\") -File $b -Recurse | select -Property Fullname, Length, LastWriteTime
+        if ($dir -EQ $null) {
+            $dir = $dir_temp
+        } else {
+            $dir += $dir_temp
+        }
+    }
+}
+$dir | Out-GridView
+$dir | Export-csv $Zieldateiname -delimiter "`t" –NoTypeInformation
