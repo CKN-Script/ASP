@@ -1,0 +1,45 @@
+Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
+$BenutzerEingabe = get-mailbox | select -property Displayname, RecipientTypeDetails | Out-GridView -PassThru -Title "Bitte wähle das Postfach das du bearbeiten willst"
+$ZielTyp = "Regular", "Room", "Equipment", "Shared" | Out-GridView -PassThru -Title "Bitte wähle den PostfachTyp aus in den du konvertieren möchtest"
+$BenutzerEingabe
+$ZielTyp
+foreach ($a in $BenutzerEingabe)
+    {
+    Set-Mailbox -Identity $a.DisplayName -Type $ZielTyp -ErrorAction SilentlyContinue
+    
+    $AktuellerPostfachTyp = Get-Mailbox -Identity $BenutzerEingabe.Displayname | select -Property ResourceType -ErrorAction SilentlyContinue
+    $AktuellerPostfachTyp
+
+        {
+        if (Get-Mailbox -Identity $BenutzerEingabe.DisplayName -RecipientTypeDetails "RoomMailbox" -ErrorAction SilentlyContinue)
+            {
+            Write-host -ForegroundColor Green 'RoomMailbox'
+            Set-CalendarProcessing -Identity $BenutzerEingabe.DisplayName -DeleteSubject $False -AddOrganizerToSubject $False -ErrorAction SilentlyContinue
+            Set-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Default -AccessRights Reviewer -ErrorAction SilentlyContinue
+            Add-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            Set-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            }
+        elseif (Get-Mailbox -Identity $BenutzerEingabe.DisplayName -RecipientTypeDetails "EquipmentMailbox" -ErrorAction SilentlyContinue)
+            {
+            Write-host -ForegroundColor Red 'EquipmentMailbox'
+            Set-CalendarProcessing -Identity $BenutzerEingabe.DisplayName -DeleteSubject $False -AddOrganizerToSubject $False -ErrorAction SilentlyContinue
+            Add-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            Set-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            }
+        elseif (Get-Mailbox -Identity $BenutzerEingabe.DisplayName -RecipientTypeDetails "SharedMailbox" -ErrorAction SilentlyContinue)
+            {
+            Write-host -ForegroundColor Orange 'SharedMailbox'
+            Add-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            Set-MailboxFolderPermission -Identity $BenutzerEingabe.DisplayName:\Calendar -User Administrator -AccessRights Owner -ErrorAction SilentlyContinue
+            }
+        elseif (Get-Mailbox -Identity $BenutzerEingabe.DisplayName -RecipientTypeDetails "UserMailbox" -ErrorAction SilentlyContinue)
+            {
+            Write-host -ForegroundColor Yellow 'UserMailbox'
+            Remove-MailboxFolderPermission -Identity TestPostfach:\Calendar -User Administrator -confirm:$false -ErrorAction SilentlyContinue
+            }
+        else
+            {
+
+            }
+        }
+    }
