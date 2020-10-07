@@ -20,4 +20,4 @@ foreach ($b in $Dateityp)
     }
 }
 $dir | Out-GridView
-$dir | Export-csv $Zieldateiname -delimiter "`t" –NoTypeInformation
+$dir | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
