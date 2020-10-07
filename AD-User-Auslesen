@@ -1,0 +1,39 @@
+$drives = Get-Volume | where DriveType -EQ "Fixed" | where FileSystemLabel -NotLike "*System-reserviert*" | sort -Property DriveLetter
+$Zielpfad = $drives | Out-GridView -PassThru -Title "Bitte Ablagelaufwerk wählen"
+$Zieldateiname = $Zielpfad.DriveLetter.ToString() + ":\Benutzer_" + (Get-Date).Day.ToString() + "_" + (Get-Date).Month.ToString() + "_" + (Get-Date).Year.ToString() + "_Output.csv"
+$ZieldateinameDeutsch = $Zielpfad.DriveLetter.ToString() + ":\Benutzer_" + (Get-Date).Day.ToString() + "_" + (Get-Date).Month.ToString() + "_" + (Get-Date).Year.ToString() + "_Output_Deutsch.csv"
+
+$Benutzerliste = get-aduser -identity TestPostfach -Properties CanonicalName, Surname, Givenname, Displayname, SamAccountName, EmailAddress, telephoneNumber, Fax, Mobilephone, HomePage, StreetAddress, city, State, Postalcode, co, Title, Department, Company, Description, Info | select -Property CanonicalName, Surname, Givenname, Displayname, SamAccountName, EmailAddress, telephoneNumber, Fax, Mobilephone, HomePage, StreetAddress, city, State, Postalcode, co, Title, Department, Company, Description, Info
+$Benutzerliste | Out-GridView
+$Benutzerliste | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
+
+$QuelleDatei="$Zieldateiname"
+$ZielDatei="$ZieldateinameDeutsch"
+
+$Datei = Get-ChildItem $QuelleDatei
+foreach ($String in $Datei)
+{
+$Inhalt = Get-Content -Path $String
+$Inhalt `
+ | foreach {$_ -replace "CanonicalName","OU"} `
+ | foreach {$_ -replace "Surname","Nachname"} `
+ | foreach {$_ -replace "Givenname","Vorname"} `
+ | foreach {$_ -replace "Displayname","Anzeigename"} `
+ | foreach {$_ -replace "SamAccountName","Anmeldename"} `
+ | foreach {$_ -replace "EmailAddress","E-Mail-Adresse"} `
+ | foreach {$_ -replace "telephoneNumber","Rufnummer"} `
+ | foreach {$_ -replace "fax","Fax"} `
+ | foreach {$_ -replace "Mobilephone","Mobil"} `
+ | foreach {$_ -replace "HomePage","Webseite"} `
+ | foreach {$_ -replace "StreetAddress","Straße"} `
+ | foreach {$_ -replace "city","Ort"} `
+ | foreach {$_ -replace "State","Bundesland"} `
+ | foreach {$_ -replace "Postalcode","PLZ"} `
+ | foreach {$_ -replace "Company","Firma"} `
+ | foreach {$_ -replace "co","Land"} `
+ | foreach {$_ -replace "Title","Position"} `
+ | foreach {$_ -replace "Department","Abteilung"} `
+ | foreach {$_ -replace "Description","Beschreibung"} `
+ | foreach {$_ -replace "Info","Anmerkungen"} `
+ | Out-File -FilePath $ZielDatei -encoding Default -Append
+}
