@@ -1,0 +1,80 @@
+cls
+
+Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
+{
+Clear-Variable drives
+Clear-Variable Inhalt
+Clear-Variable PostfachGroessen
+Clear-Variable QuelleDatei
+Clear-Variable String
+Clear-Variable Zieldateiname
+Clear-Variable ZieldateinameDeutsch
+Clear-Variable Zielpfad
+}
+
+{
+$drives = Get-Volume `
+          | where DriveType -EQ "Fixed" `
+          | where FileSystemLabel -NotLike "*System-reserviert*" `
+          | sort -Property DriveLetter
+}
+
+{
+$Zielpfad = $drives `
+            | Out-GridView -PassThru -Title "Bitte wähle das Laufwerk in dessen Root die Datei abgelegt wird !"
+}
+
+{
+$Zieldateiname = $Zielpfad.DriveLetter.ToString() `
+                 + ":\Exchange_Postfachgroessen_" `
+                 + (Get-Date).Day.ToString() `
+                 + "_" `
+                 + (Get-Date).Month.ToString() `
+                 + "_" `
+                 + (Get-Date).Year.ToString() `
+                 + ".csv"
+}
+
+{
+$PostfachGroessen = Get-MailboxDatabase `
+                    | Get-MailboxStatistics -Filter {(DisplayName -NotLike "*Health*") `
+                    -and (DisplayName -NotLike "*Exchange*") `
+                    -and (DisplayName -NotLike "*System*")} `
+                    | Select-Object Displayname, Totalitemsize, ServerName, Database, DatabaseIssueWarningQuota, DatabaseProhibitSendQuota, DatabaseProhibitSendReceiveQuota `
+                    | Sort-Object totalitemsize -Descending
+}
+
+{
+$PostfachGroessen | Out-GridView
+$PostfachGroessen | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
+}
+
+{
+$QuelleDatei = "$Zieldateiname"
+$ZielDatei = $Zielpfad.DriveLetter.ToString() `
+             + ":\Exchange_Postfachgroessen_" `
+             + (Get-Date).Day.ToString() `
+             + "_" `
+             + (Get-Date).Month.ToString() `
+             + "_" `
+             + (Get-Date).Year.ToString() `
+             + "_Deutsch" `
+             + ".csv"
+}
+
+{
+$Datei = Get-ChildItem $QuelleDatei
+foreach ($String in $Datei)
+    {
+    $Inhalt = Get-Content -Path $String
+    $Inhalt `
+     | foreach {$_ -replace "DisplayName","Anzeigename"} `
+     | foreach {$_ -replace "TotalItemSize","Postfachgröße"} `
+     | foreach {$_ -replace "DatabaseIssueWarningQuota","Warnschwelle für Postfachgröße"} `
+     | foreach {$_ -replace "DatabaseProhibitSendQuota","Einstellung des Mailversands"} `
+     | foreach {$_ -replace "DatabaseProhibitSendReceiveQuota","Einstellung des Mailempfangs (Postfach voll)"} `
+     | foreach {$_ -replace "Database","Datenbankname"} `
+     | foreach {$_ -replace "ServerName","Servername"} `
+     | Out-File -FilePath $ZielDatei -encoding Defaul
+    }
+}
