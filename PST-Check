@@ -1,23 +1,76 @@
-$Dateityp = "*.txt", "*.exe", "*.pst" | Out-GridView -PassThru -Title "Bitte wähle den Dateityp!"
-$drives = Get-Volume | where DriveType -EQ "Fixed" | where FileSystemLabel -NotLike "*System-reserviert*" | sort -Property DriveLetter
-$Zielpfad = $drives | Out-GridView -PassThru -Title "Bitte Ablagelaufwerk wählen"
-$Zieldateiname = $Zielpfad.DriveLetter.ToString() + ":\" + (Get-Date).Day.ToString() + "_" + (Get-Date).Month.ToString() + "_" + (Get-Date).Year.ToString() + "_Output.csv"
-
-Clear-Variable dir
 cls
+
+Clear-Variable a -InformationAction SilentlyContinue
+Clear-Variable b -InformationAction SilentlyContinue
+Clear-Variable datei -InformationAction SilentlyContinue
+Clear-Variable dateityp -InformationAction SilentlyContinue
+Clear-Variable dir -InformationAction SilentlyContinue
+Clear-Variable dir_temp -InformationAction SilentlyContinue
+Clear-Variable drives -InformationAction SilentlyContinue
+Clear-Variable driveletter_string -InformationAction SilentlyContinue
+Clear-Variable Inhalt -InformationAction SilentlyContinue
+Clear-Variable Quelledatei -InformationAction SilentlyContinue
+Clear-Variable String -InformationAction SilentlyContinue
+Clear-Variable Zielpfad -InformationAction SilentlyContinue
+Clear-Variable Zieldatei -InformationAction SilentlyContinue
+Clear-Variable Zieldateiname -InformationAction SilentlyContinue
+
+$Dateityp = "*.dll", "*.exe", "*.ini", "*.pst", "*.txt" `
+            | Out-GridView -PassThru -Title "Bitte wähle den Dateityp nach dem gesucht werden soll !"
+
+$drives = Get-Volume `
+          | where DriveType -EQ "Fixed" `
+          | where FileSystemLabel -NotLike "*System-reserviert*" `
+          | sort -Property DriveLetter
+
+$Zielpfad = $drives `
+            | Out-GridView -PassThru -Title "Bitte wähle das Laufwerk in dessen Root die Datei abgelegt wird !"
+
+$Zieldateiname = $Zielpfad.DriveLetter.ToString() `
+                 + ":\Massensuche_" `
+                 + (Get-Date).Day.ToString() `
+                 + "_" `
+                 + (Get-Date).Month.ToString() `
+                 + "_" `
+                 + (Get-Date).Year.ToString() `
+                 + ".csv"
+
 foreach ($b in $Dateityp)
 {
     foreach ($a in ($drives.driveletter))
     {
         $driveletter_string = $a.ToString()
-        Write-Host "Ich durchsuche Laufwerk" $driveletter_string "nach" $b
-        $dir_temp = Get-ChildItem -Path (($driveletter_string)+":\") -File $b -Recurse | select -Property Fullname, Length, LastWriteTime
-        if ($dir -EQ $null) {
-            $dir = $dir_temp
-        } else {
-            $dir += $dir_temp
+        #Write-Host "Ich durchsuche Laufwerk" $driveletter_string "nach" $b
+        $dir_temp = Get-ChildItem -Path (($driveletter_string)+":\") -File $b -Recurse -ErrorAction SilentlyContinue `
+                    | select -Property Fullname, Length, LastWriteTime
+                        if ($dir -EQ $null) {
+                        $dir = $dir_temp
+                        } else {
+                        $dir += $dir_temp
         }
     }
 }
 $dir | Out-GridView
 $dir | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
+
+$QuelleDatei = "$Zieldateiname"
+$ZielDatei = $Zielpfad.DriveLetter.ToString() `
+             + ":\Massensuche_" `
+             + (Get-Date).Day.ToString() `
+             + "_" `
+             + (Get-Date).Month.ToString() `
+             + "_" `
+             + (Get-Date).Year.ToString() `
+             + "_Deutsch" `
+             + ".csv"
+
+$Datei = Get-ChildItem $QuelleDatei
+foreach ($String in $Datei)
+    {
+    $Inhalt = Get-Content -Path $String
+    $Inhalt `
+     | foreach {$_ -replace "Fullname","Pfad & Dateiname"} `
+     | foreach {$_ -replace "Length","Dateigröße"} `
+     | foreach {$_ -replace "LastWriteTime","letzte Speicherung"} `
+     | Out-File -FilePath $ZielDatei -encoding Default
+    }
