@@ -1,0 +1,84 @@
+cls
+
+Clear-Variable = $BenutzerHardLinks
+Clear-Variable = $kopierenDesktop
+Clear-Variable = $kopierenFavoriten
+Clear-Variable = $kopierenMusik
+Clear-Variable = $kopierenBilder
+Clear-Variable = $kopierenVideos
+Clear-Variable = $kopierenAppDataRoaming
+Clear-Variable = $kopierenAppDataLocal
+Clear-Variable = $Zieldateiname
+Clear-Variable = $Zielpfad
+
+$BenutzerHardLinks = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders' | Get-ItemProperty
+
+Add-Type -AssemblyName Microsoft.VisualBasic
+$Zielpfad = [Microsoft.VisualBasic.Interaction]::InputBox('Gib bitte den Zielpfad ein, bitte mit \ abschließen', 'Zielpfad')
+md $Zielpfad
+
+$Zieldateiname = $Zielpfad `
+                  + "Profilkopie_" `
+                  + (Get-Date).Day.ToString() `
+                  + "_" `
+                  + (Get-Date).Month.ToString() `
+                  + "_" `
+                  + (Get-Date).Year.ToString() `
+                  + ".csv"
+
+$kopierenDesktop        = Copy-Item -Path $BenutzerHardLinks.Desktop `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+$kopierenFavoriten      = Copy-Item -Path $BenutzerHardLinks.Favorites `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+$kopierenMusik          = Copy-Item -Path $BenutzerHardLinks.'My Music' `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+$kopierenBilder         = Copy-Item -Path $BenutzerHardLinks.'My Pictures' `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+$kopierenVideos         = Copy-Item -Path $BenutzerHardLinks.'My Video' `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+
+$kopierenAppDataRoaming = Copy-Item -Path $BenutzerHardLinks.AppData `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru `
+$kopierenAppDataLocal   = Copy-Item -Path $BenutzerHardLinks.'Local AppData' `
+                                    -Destination $Zielpfad `
+                                    -Recurse `
+                                    -Force `
+                                    -PassThru
+
+$kopierenDesktop `
+ + $kopierenFavoriten `
+ + $kopierenMusik `
+ + $kopierenBilder `
+ + $kopierenVideos `
+ + $kopierenAppDataRoaming `
+ + $kopierenAppDataLocal `
+ | select -Property Fullname, Length, LastWriteTime `
+ | Out-GridView -Title "Diese Dateien wurden nach $Zielpfad kopiert"
+
+$kopierenDesktop `
+ + $kopierenFavoriten `
+ + $kopierenMusik `
+ + $kopierenBilder `
+ + $kopierenVideos `
+ + $kopierenAppDataRoaming `
+ + $kopierenAppDataLocal `
+ | select -Property Fullname, Length, LastWriteTime `
+ | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
