@@ -1,0 +1,94 @@
+cls
+
+Clear-Variable a
+Clear-Variable b
+Clear-Variable datei
+Clear-Variable dateityp
+Clear-Variable dateityp1
+Clear-Variable dir
+Clear-Variable dir_temp
+Clear-Variable drives
+Clear-Variable driveletter_string
+Clear-Variable Inhalt
+Clear-Variable Quelledatei
+Clear-Variable String
+Clear-Variable Zielpfad
+Clear-Variable Zieldatei
+Clear-Variable Zieldateiname
+
+Add-Type -AssemblyName Microsoft.VisualBasic
+$DateiTyp = [Microsoft.VisualBasic.Interaction]::InputBox('Bitte gib die Datei oder den DateiTyp ein, nachdem du suchen möchtest', 'Datei/Typ', "*.pst")
+$DateiTyp1 = $DateiTyp.Replace("*.", "")
+
+Add-Type -AssemblyName Microsoft.VisualBasic
+$Zielpfad = [Microsoft.VisualBasic.Interaction]::InputBox('Gib bitte den Zielpfad ein, bitte mit \ abschließen', 'Zielpfad', "D:\ExchangeDiagnose\")
+md $Zielpfad
+
+$Zieldateiname = $Zielpfad `
+                  + $env:COMPUTERNAME `
+                  + "_" `
+                  + "$DateiTyp1" `
+                  + "_" `
+                  + (Get-Date).Day.ToString() `
+                  + "_" `
+                  + (Get-Date).Month.ToString() `
+                  + "_" `
+                  + (Get-Date).Year.ToString() `
+                  + ".csv"
+
+$drives = Get-Volume `
+           | where DriveType -EQ "Fixed" `
+           | where FileSystemLabel -NotLike "*System-reserviert*" `
+           | sort -Property DriveLetter
+
+foreach ($b in $Dateityp)
+{
+    foreach ($a in ($drives.driveletter))
+    {
+        $driveletter_string = $a.ToString()
+        #Write-Host "Ich durchsuche Laufwerk" $driveletter_string "nach" $b
+        $dir_temp = Get-ChildItem -Path (($driveletter_string)+":\") -File $b -Recurse -ErrorAction SilentlyContinue `
+                    | select -Property Fullname, Length, LastWriteTime
+                        if ($dir -EQ $null)
+                        {
+                        $dir = $dir_temp
+                        } else {
+                        $dir += $dir_temp
+        }
+    }
+}
+$dir | Out-GridView
+$dir | Export-csv $Zieldateiname -delimiter ";" –NoTypeInformation
+
+{
+if ($dir -EQ "")
+   {
+   [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+   $return=[System.Windows.Forms.Messagebox]::Show("Es wurde Datei $DateiTyp1 gefunden")
+   }
+}
+
+$QuelleDatei = "$Zieldateiname"
+$ZielDatei = $Zielpfad `
+              + $env:COMPUTERNAME `
+              + "_" `
+              +"$DateiTyp1" `
+              +"_" `
+              + (Get-Date).Day.ToString() `
+              + "_" `
+              + (Get-Date).Month.ToString() `
+              + "_" `
+              + (Get-Date).Year.ToString() `
+              + "_Deutsch" `
+              + ".csv"
+
+$Datei = Get-ChildItem $QuelleDatei
+foreach ($String in $Datei)
+    {
+    $Inhalt = Get-Content -Path $String
+    $Inhalt `
+     | foreach {$_ -replace "Fullname","Pfad & Dateiname"} `
+     | foreach {$_ -replace "Length","Dateigröße"} `
+     | foreach {$_ -replace "LastWriteTime","letzte Speicherung"} `
+     | Out-File -FilePath $ZielDatei -encoding Default
+    }
